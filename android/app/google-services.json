@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1039100562147",
+    "project_id": "firestore-demo-5b177",
+    "storage_bucket": "firestore-demo-5b177.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039100562147:android:a1c59a31be7a8b1d0153d6",
+        "android_client_info": {
+          "package_name": "com.hoangnv97.moviedemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039100562147-06tsrgmen5sg4vpgdggp5g8aa34tm16u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGg5xV9R8jlkisoobXTXCfEcTz_VQIPI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039100562147-06tsrgmen5sg4vpgdggp5g8aa34tm16u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

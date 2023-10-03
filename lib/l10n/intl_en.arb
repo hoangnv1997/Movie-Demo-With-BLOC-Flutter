@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "email": "Email",
+  "password": "Password",
+  "register": "Register",
+  "login": "Log in",
+  "notice": "notice",
+  "no_connection_message": "No internet connection. Please check your internet connection and try again.",
+  "ok": "OK",
+  "reload": "reload",
+  "unknown_error": "unknown error"
+}
