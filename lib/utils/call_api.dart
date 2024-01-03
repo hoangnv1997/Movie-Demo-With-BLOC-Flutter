@@ -1,4 +1,5 @@
-import 'package:moviedemo/common/bloc/base_state.dart';
+import 'package:moviedemo/model/http_raw/http_raw.dart';
+import 'package:moviedemo/model/network_exception/network_exception.dart';
 import 'package:moviedemo/utils/const.dart';
 
 Future<void> callApi<T extends Object>({
@@ -23,5 +24,17 @@ Future<void> callApi<T extends Object>({
     }
   } else {
     onError?.call(NetworkException.copyFromHttpRaw(result));
+  }
+}
+
+Future<void> handleWithError({
+  required Future<void> Function() methodCallApi,
+  Function? onError,
+  Function? onSuccess,
+}) async {
+  try {
+    final result = await methodCallApi.call();
+  } catch (exception) {
+    onError?.call();
   }
 }

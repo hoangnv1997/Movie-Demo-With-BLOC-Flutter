@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:moviedemo/common/bloc/base_state.dart';
-import 'package:moviedemo/main/main_develop.dart';
 import 'package:moviedemo/model/enum/error_message.dart';
-import 'package:moviedemo/repository/secure_store_repository.dart';
+import 'package:moviedemo/model/http_raw/http_raw.dart';
 import 'package:moviedemo/utils/const.dart';
 import 'package:moviedemo/utils/logger.dart';
 import 'package:moviedemo/utils/timestamp.dart';
@@ -142,11 +140,11 @@ class MyInterceptor extends Interceptor {
       await getTimezone();
     }
 
-    if (token.isNotEmpty) {
-      // options.headers.addAll({"Authorization": "Bearer $token"});
-      options.headers
-          .addAll({"Authorization": "Bearer ${UrlEndPoint.accessToken}"});
-    }
+    // if (token.isNotEmpty) {
+    // options.headers.addAll({"Authorization": "Bearer $token"});
+    options.headers
+        .addAll({"Authorization": "Bearer ${UrlEndPoint.accessToken}"});
+    // }
     // options.headers.addAll({"timezone": timezone});
     logger.d(
         'Request API option: method: ${options.uri}, data: ${options.data}, header: ${options.headers}');
@@ -170,9 +168,7 @@ class MyInterceptor extends Interceptor {
 
   Future<void> getToken() async {
     try {
-      token = (await getIt<SecureStoreRepository>()
-              .get(SecureStoreRepository.keyAccessToken)) ??
-          '';
+      token = '';
     } catch (e) {
       logger.d('Error when get token and uuid');
     }

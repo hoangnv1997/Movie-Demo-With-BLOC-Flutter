@@ -1,32 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:moviedemo/common/bloc/base_state.dart';
-import 'package:moviedemo/common/bloc/bloc_consumer_creation.dart';
 import 'package:moviedemo/common/color/app_color.dart';
+import 'package:moviedemo/common/controller/base_controller.dart';
 import 'package:moviedemo/common/widget/base_page.dart';
-import 'package:moviedemo/main/main_develop.dart';
 import 'package:moviedemo/model/item_list_response/item_list_response.dart';
-import 'package:moviedemo/ui/home/bloc/home_bloc.dart';
+import 'package:moviedemo/ui/home/controller/home_controller.dart';
 import 'package:moviedemo/ui/home/widget/movie_item.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends BasePage<HomeController> {
+  HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return buildBasePage(
-      appBar: _buildAppBar(context),
-      backgroundColor: AppColor.black,
-      body: BlocProvider(
-        create: (context) => getIt<HomeBloc>()..add(HomeFetched()),
-        child: _buildBodyWidget(),
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget? appBar(BuildContext context) {
     return AppBar(
       elevation: 0,
       backgroundColor: AppColor.transparent,
@@ -39,50 +25,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBodyWidget() {
-    return createBlocConsumer<HomeEvent, HomeState, HomeBloc>(
-      listenWhen: (previous, current) =>
-          previous.pageIndex != current.pageIndex,
-      buildWhen: (previous, current) => previous.status != current.status,
-      shouldShowLoadingFullScreen: true,
-      builder: (context, state) {
-        if (state.status == BlocStatus.success &&
-            state.itemListPopularResponse != null) {
-          return RefreshIndicator(
-            onRefresh: () {
-              context.read<HomeBloc>().add(HomeFetched());
-              return Future<void>.delayed(const Duration(milliseconds: 100));
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 5.w),
-                  _buildTitle('Popular'),
-                  SizedBox(height: 5.w),
-                  _buildItemList(context, state.itemListPopularResponse),
-                  SizedBox(height: 5.w),
-                  _buildTitle('Now Playing'),
-                  SizedBox(height: 5.w),
-                  _buildItemList(context, state.itemListNowPlayingResponse),
-                  SizedBox(height: 5.w),
-                  _buildTitle('Top Rated'),
-                  SizedBox(height: 5.w),
-                  _buildItemList(context, state.itemListTopRatedResponse),
-                  SizedBox(height: 5.w),
-                  _buildTitle('Upcoming'),
-                  SizedBox(height: 5.w),
-                  _buildItemList(context, state.itemListUpcomingResponse),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
-  }
+  @override
+  Color getPageBackgroundColor() => AppColor.black;
 
   Widget _buildTitle(String title) {
     return Container(
@@ -110,5 +54,44 @@ class HomePage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  Widget body(BuildContext context) {
+    if (controller.status.value == Status.success
+        // && state.itemListPopularResponse != null
+        ) {
+      return RefreshIndicator(
+        onRefresh: () {
+          // context.read<HomeBloc>().add(HomeFetched());
+          return Future<void>.delayed(const Duration(milliseconds: 100));
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 5.w),
+              _buildTitle('Popular'),
+              SizedBox(height: 5.w),
+              _buildItemList(context, controller.moviePopularList),
+              SizedBox(height: 5.w),
+              _buildTitle('Now Playing'),
+              SizedBox(height: 5.w),
+              _buildItemList(context, controller.movieNowPlayingList),
+              SizedBox(height: 5.w),
+              _buildTitle('Top Rated'),
+              SizedBox(height: 5.w),
+              _buildItemList(context, controller.movieTopRatedList),
+              SizedBox(height: 5.w),
+              _buildTitle('Upcoming'),
+              SizedBox(height: 5.w),
+              _buildItemList(context, controller.movieUpcomingList),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 }

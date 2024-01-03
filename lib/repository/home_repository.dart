@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:moviedemo/model/item_list_response/item_list_response.dart';
 import 'package:moviedemo/repository/network_repository.dart';
 import 'package:moviedemo/utils/call_api.dart';
@@ -14,11 +15,7 @@ abstract class HomeRepository {
 }
 
 class HomeRepositoryImpl extends HomeRepository {
-  final NetworkRepository networkRepository;
-
-  HomeRepositoryImpl({
-    required this.networkRepository,
-  });
+  final NetworkRepository networkRepository = Get.find();
 
   @override
   Future<ItemListResponse?> getMoviePopularList({required int page}) async {

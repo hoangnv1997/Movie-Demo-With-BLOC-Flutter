@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:moviedemo/bindings/app_binding.dart';
 import 'package:moviedemo/common/theme/app_themes.dart';
 import 'package:moviedemo/generated/l10n.dart';
 import 'package:moviedemo/routing/app_routing.dart';
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
       designSize: Const.screenDesignSize,
       minTextAdapt: true,
       builder: (context, child) {
-        return MaterialApp(
+        return GetMaterialApp(
           navigatorKey: navigatorKey,
           theme: AppThemes.lightTheme,
           debugShowCheckedModeBanner: false,
@@ -33,8 +35,9 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          onGenerateRoute: AppRouting.generateRoute,
+          initialBinding: AppBinding(),
           initialRoute: initialRoute,
+          getPages: AppRouting.getPages,
           supportedLocales: S.delegate.supportedLocales,
         );
       },

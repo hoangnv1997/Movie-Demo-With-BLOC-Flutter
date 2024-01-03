@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:moviedemo/common/image/app_images.dart';
 import 'package:moviedemo/common/widget/input_form.dart';
 import 'package:moviedemo/generated/l10n.dart';
-import 'package:moviedemo/ui/login/bloc/login_bloc.dart';
+import 'package:moviedemo/ui/login/controller/login_controller.dart';
 
-class PasswordInput extends StatelessWidget {
+class PasswordInput extends GetView<LoginController> {
   const PasswordInput({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
+    return Obx(
+      () {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: InputForm(
@@ -21,32 +21,33 @@ class PasswordInput extends StatelessWidget {
             borderRadius: 5,
             textStyle: TextStyle(fontSize: 18.sp, height: 1),
             onChanged: (password) {
-              context
-                  .read<LoginBloc>()
-                  .add(LoginPasswordChanged(password: password));
+              controller.password.value = password;
             },
-            obscureText: !state.isShowPassword,
+            obscureText: !controller.isShowPassword.value,
             suffixIconConstraints:
                 BoxConstraints(minWidth: 22.w, minHeight: 22.w),
-            suffixIcon: _buildShowOrHidePassIcon(state, context),
+            suffixIcon: _buildShowOrHidePassIcon(),
           ),
         );
       },
     );
   }
 
-  Widget _buildShowOrHidePassIcon(LoginState state, BuildContext context) {
+  Widget _buildShowOrHidePassIcon() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 19.w),
       child: GestureDetector(
         onTap: () {
-          context.read<LoginBloc>().add(const LoginShowOrHidePass());
+          final currentState = controller.isShowPassword.value;
+          controller.isShowPassword.value = !currentState;
         },
         child: SizedBox(
           width: 22.w,
           height: 22.w,
           child: SvgPicture.asset(
-            state.isShowPassword ? AppImages.eyeHide : AppImages.eyeNotHide,
+            controller.isShowPassword.value
+                ? AppImages.eyeHide
+                : AppImages.eyeNotHide,
             fit: BoxFit.cover,
           ),
         ),

@@ -1,64 +1,73 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:moviedemo/database/shared_preferences_helper.dart';
-import 'package:moviedemo/model/account/account_info.dart';
+import 'package:get/get.dart';
+import 'package:moviedemo/model/http_raw/http_raw.dart';
+import 'package:moviedemo/model/login_response/login_response.dart';
+import 'package:moviedemo/repository/network_repository.dart';
 
 abstract class AuthRepository {
-  Future<void> addAccount({
-    required String email,
-    required String password,
-  });
-
   Future<bool> isLoggedIn();
 
-  Future<AccountInfo?> loginAccount({
+  Future<LoginResponse?> login({
     required String email,
     required String password,
   });
+
+  void saveToken({required String token, required String accessToken});
+
+  void removeToken();
+
+  bool logOut();
 }
 
 class AuthRepositoryImpl extends AuthRepository {
-  // Create a CollectionReference called accounts that references the firestore collection
-  final CollectionReference accounts =
-      FirebaseFirestore.instance.collection('accounts');
+  final NetworkRepository _networkRepository = Get.find();
+
+  @override
+  Future<LoginResponse> login(
+      {required String email, required String password}) async {
+    await Future.delayed(const Duration(seconds: 2));
+    return const LoginResponse(
+        accessToken: 'accessToken', refreshToken: 'refreshToken');
+    // LoginResponse? loginResponse;
+    // await callApi<LoginResponse>(
+    //     methodCallApi: () => fakeLogin(),
+    //     parsing: (Map<String, dynamic> data) => LoginResponse.fromJson(data),
+    //     onSuccess: (LoginResponse response) {
+    //       loginResponse = response;
+    //     },
+    //     onError: (NetworkException exp) {
+    //       throw exp;
+    //     });
+    //
+    // return loginResponse ?? LoginResponse.empty();
+  }
+
+  /// Fake login
+  Future<HttpRaw> fakeLogin() async {
+    await Future.delayed(const Duration(seconds: 2));
+    return const HttpRaw(
+      isSuccessCall: true,
+      data: '''
+    {
+      "accessToken": "accessToken",
+      "refreshToken": "refreshToken"
+    }
+    ''',
+    );
+  }
+
+  @override
+  void removeToken() {}
+
+  @override
+  void saveToken({required String token, required String accessToken}) {}
 
   @override
   Future<bool> isLoggedIn() async {
-    return SharedPreferencesHelper.getBoolType(
-        SharedPreferencesHelper.keyLogged);
+    return false;
   }
 
   @override
-  Future<AccountInfo?> loginAccount({
-    required String email,
-    required String password,
-  }) async {
-    AccountInfo accountInfo = AccountInfo.empty();
-    var snapshot = await accounts.where('email', isEqualTo: email).get();
-    if (snapshot.docs.isNotEmpty) {
-      if (snapshot.docs.isNotEmpty) {
-        accountInfo = AccountInfo(
-          email: snapshot.docs[0]['email'],
-          password: snapshot.docs[0]['password'],
-        );
-      } else {
-        print("loginAccount  snapshot.docs.isEmpty");
-        accountInfo = AccountInfo.empty();
-      }
-    }
-
-    return accountInfo;
-  }
-
-  @override
-  Future<void> addAccount({
-    required String email,
-    required String password,
-  }) {
-    return accounts.doc(email).set(
-      {
-        'email': email,
-        'password': password,
-      },
-    ).then((value) => print("Account Added"));
+  bool logOut() {
+    return true;
   }
 }
